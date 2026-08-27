@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>同仁回饋問卷 - AI 行政效能演講</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- canvas-confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body style="padding-bottom: 2rem;">
+
+  <div class="container-mobile">
+    <!-- 手機端頁首 -->
+    <div class="glass-card" style="text-align: center; margin-bottom: 1.25rem;">
+      <div style="font-size: 2.2rem; margin-bottom: 0.25rem;" class="floating">✨</div>
+      <span id="form-stage-badge" class="badge badge-success" style="margin-bottom: 0.5rem;">
+        🎉 課後問卷：滿意度與學習收穫
+      </span>
+      <h2 id="form-main-title" style="font-size: 1.35rem; color: #fff; font-weight: 800; margin-top: 0.25rem;">
+        課後滿意度與回饋問卷
+      </h2>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">
+        輔英科技大學 AI 行政效能提升演講
+      </p>
+    </div>
+
+    <!-- 表單卡片 -->
+    <form id="survey-form" class="glass-card">
+      
+      <!-- 通用欄位: 所屬單位 -->
+      <div class="form-group">
+        <label class="form-label" for="field-department">
+          🏢 您的所屬單位/處室 <span style="font-size: 0.8rem; color: var(--text-muted);">(選填)</span>
+        </label>
+        <select id="field-department" class="form-select">
+          <option value="" disabled>-- 請選擇所屬單位 / 學院科系 --</option>
+          
+          <optgroup label="🏛️ 一級行政單位">
+            <option value="校長室 / 祕書室">校長室 / 祕書室</option>
+            <option value="教務處">教務處</option>
+            <option value="學生事務處 (學務處)">學生事務處 (學務處)</option>
+            <option value="總務處">總務處</option>
+            <option value="研究發展處 (研發處)">研究發展處 (研發處)</option>
+            <option value="國際暨兩岸交流處">國際暨兩岸交流處</option>
+            <option value="人事室">人事室</option>
+            <option value="主計室 / 會計室">主計室 / 會計室</option>
+            <option value="資訊中心">資訊中心</option>
+            <option value="圖書館">圖書館</option>
+            <option value="環境安全衛生中心">環境安全衛生中心 (環安中心)</option>
+            <option value="產學合作暨職涯發展中心">產學合作暨職涯發展中心</option>
+            <option value="體育室">體育室</option>
+            <option value="附設機構 / 附設醫院">附設機構 / 附設醫院</option>
+          </optgroup>
+
+          <optgroup label="🩺 護理學院">
+            <option value="護理學院 (院辦)">護理學院 (院辦)</option>
+            <option value="護理系 (含碩博班)">護理系 (含碩博班)</option>
+            <option value="助產與婦潔保健系">助產與婦潔保健系</option>
+            <option value="高齡長期照護事業系">高齡長期照護事業系</option>
+          </optgroup>
+
+          <optgroup label="🧪 醫學與健康學院">
+            <option value="醫學與健康學院 (院辦)">醫學與健康學院 (院辦)</option>
+            <option value="醫學檢驗生物技術系">醫學檢驗生物技術系</option>
+            <option value="物理治療系">物理治療系</option>
+            <option value="香妝與保健造型學系">香妝與保健造型學系</option>
+            <option value="職業安全衛生系">職業安全衛生系</option>
+          </optgroup>
+
+          <optgroup label="🌱 環境與生命科學學院">
+            <option value="環境與生命科學學院 (院辦)">環境與生命科學學院 (院辦)</option>
+            <option value="環境工程與科學系">環境工程與科學系</option>
+            <option value="保健營養系">保健營養系</option>
+            <option value="生物科技系">生物科技系</option>
+          </optgroup>
+
+          <optgroup label="💼 人文與管理學院">
+            <option value="人文與管理學院 (院辦)">人文與管理學院 (院辦)</option>
+            <option value="幼兒保育系">幼兒保育系</option>
+            <option value="健康美容學系">健康美容學系</option>
+            <option value="休閒與遊憩事業管理系">休閒與遊憩事業管理系</option>
+            <option value="資訊管理系">資訊管理系</option>
+            <option value="應用外語系">應用外語系</option>
+            <option value="通識教育中心">通識教育中心</option>
+          </optgroup>
+
+          <optgroup label="其他">
+            <option value="其他行政 / 教學單位" selected>其他行政 / 教學單位</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- ================= 課前專用欄位 (Stage: pre) ================= -->
+      <div id="stage-pre-fields" style="display: none;">
+        <div class="form-group">
+          <label class="form-label">
+            ⭐ 目前日常行政中對 AI 工具的熟悉程度 <span class="required">*</span>
+          </label>
+          <div id="pre-skill-stars" class="star-rating">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem;">
+            (1 分：完全陌生 ➔ 5 分：非常精通能靈活應用)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            💼 目前行政業務最希望改善的耗時痛點 <span style="font-size: 0.8rem; color: var(--text-muted);">(可多選)</span>
+          </label>
+          <div id="pre-pain-points-tags" class="tag-container">
+            <div class="tag-chip active">公文與簽呈撰寫耗時</div>
+            <div class="tag-chip">會議紀錄整理緩慢</div>
+            <div class="tag-chip active">數據分析與報表統計</div>
+            <div class="tag-chip">海報與簡報製作缺靈感</div>
+            <div class="tag-chip">跨部門溝通郵件草擬</div>
+            <div class="tag-chip">法規與活動計劃書發想</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-pre-expectation">
+            💭 對今天演講最期待學習到的 AI 技巧或問題？
+          </label>
+          <textarea id="field-pre-expectation" class="form-control" placeholder="例如：希望學會如何用 AI 快速生成會議摘要、一鍵草擬公文..."></textarea>
+        </div>
+      </div>
+
+      <!-- ================= 課後專用欄位 (Stage: post) ================= -->
+      <div id="stage-post-fields">
+        <div class="form-group">
+          <label class="form-label">
+            🌟 本次 AI 行政效能演講的整體滿意度 <span class="required">*</span>
+          </label>
+          <div id="post-satisfaction-stars" class="star-rating">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            🚀 演講結束後，您對運用 AI 提升行政效能的信心？ <span class="required">*</span>
+          </label>
+          <div id="post-skill-stars" class="star-rating">
+            <span class="star" data-value="1">☆</span>
+            <span class="star" data-value="2">☆</span>
+            <span class="star" data-value="3">☆</span>
+            <span class="star" data-value="4">☆</span>
+            <span class="star" data-value="5">☆</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">
+            💡 今天演講中認為最有幫助、想回辦公室導入的主題 <span style="font-size: 0.8rem; color: var(--text-muted);">(可多選)</span>
+          </label>
+          <div id="post-gain-topics-tags" class="tag-container">
+            <div class="tag-chip active">ChatGPT 提示詞萬能公式</div>
+            <div class="tag-chip active">公文自動摘要與草擬</div>
+            <div class="tag-chip">Excel 數據快捷清理</div>
+            <div class="tag-chip active">一鍵生成會議精華紀錄</div>
+            <div class="tag-chip">AI 圖像與海報生成</div>
+            <div class="tag-chip">簡報大綱自動生成</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="field-post-feedback">
+            💌 給講師的實用回饋或想說的話？
+          </label>
+          <textarea id="field-post-feedback" class="form-control" placeholder="分享您的收穫或感謝，您的留言將即時躍上大螢幕動態看板喔！"></textarea>
+        </div>
+      </div>
+
+      <!-- 提交按鈕 -->
+      <button type="submit" class="btn btn-primary btn-lg btn-block" style="margin-top: 1rem;">
+        🚀 送出問卷 (即時登上大螢幕看板)
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; color: var(--text-dim); font-size: 0.8rem;">
+      © 輔英科技大學 AI 行政效能團隊 版權所有
+    </div>
+  </div>
+
+  <!-- 填寫完成模態框 (Thank You Modal) -->
+  <div id="thankyou-modal" class="modal-backdrop">
+    <div class="modal-content">
+      <div style="font-size: 3.5rem; margin-bottom: 0.5rem;" class="floating">🎉</div>
+      <h2 style="font-size: 1.6rem; color: #fff; margin-bottom: 0.5rem;">問卷提交成功！</h2>
+      <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6;">
+        感謝您的即時回饋！<br>
+        <strong style="color: #818cf8;">請看大螢幕，您的資料已實時跳出於即時看板中！</strong>
+      </p>
+      <button class="btn btn-primary btn-block" onclick="closeThankYouModal()">
+        繼續瀏覽 / 再填一份
+      </button>
+    </div>
+  </div>
+
+  <!-- 引入腳本 -->
+  <script src="js/app.js"></script>
+  <script src="js/participant.js"></script>
+</body>
+</html>

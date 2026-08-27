@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 行政效能演講 - 大螢幕即時動態看板</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- canvas-confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- QRCode.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="container" style="max-width: 1600px; padding: 1.25rem;">
+    <!-- 頂部標題列 -->
+    <header class="app-header">
+      <div class="app-title-group">
+        <div class="app-title-icon">🚀</div>
+        <div>
+          <h1 class="app-title">AI 行政效能提升 - 即時動態學習看板</h1>
+          <div class="app-subtitle">輔英科技大學 | 現場互動與前後成效即時視覺化</div>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span id="current-mode-badge" class="badge badge-success">🎉 當前階段：課後滿意度與學習成果收集</span>
+        <button class="btn btn-secondary" onclick="openQRModal()">
+          📱 掃描填寫 QR Code
+        </button>
+        <button class="btn btn-primary" onclick="toggleFullScreen()">
+          🖥️ 全螢幕模式
+        </button>
+      </div>
+    </header>
+
+    <!-- 頂部核心指標 Metric Cards -->
+    <div class="dashboard-grid" style="margin-bottom: 1.25rem;">
+      <div class="col-3">
+        <div class="glass-card metric-card counter-pulse">
+          <div class="metric-icon" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;">📊</div>
+          <div class="metric-info">
+            <div class="label">已收集問卷總數</div>
+            <div class="value gradient-text" id="metric-total-count">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="glass-card metric-card">
+          <div class="metric-icon" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;">⚡</div>
+          <div class="metric-info">
+            <div class="label">課前期待與痛點</div>
+            <div class="value" id="metric-pre-count" style="color: #fbbf24;">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="glass-card metric-card">
+          <div class="metric-icon" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">🎉</div>
+          <div class="metric-info">
+            <div class="label">課後滿意度回饋</div>
+            <div class="value" id="metric-post-count" style="color: #34d399;">0</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="glass-card metric-card">
+          <div class="metric-icon" style="background: rgba(236, 72, 153, 0.2); color: #f472b6;">📈</div>
+          <div class="metric-info">
+            <div class="label">平均滿意度 / 成長率</div>
+            <div class="value" style="color: #f472b6;">
+              <span id="metric-satisfaction-avg">5.0</span>
+              <span style="font-size: 1rem; color: #10b981; font-weight: 600;" id="metric-growth-rate">+125%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 主要圖表與動態流區域 -->
+    <div class="dashboard-grid">
+      <!-- 左欄: 雷達對比圖 & 痛點排行榜 -->
+      <div class="col-7">
+        <div class="dashboard-grid">
+          <!-- 課前 vs 課後 雷達圖 -->
+          <div class="col-12">
+            <div class="glass-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.1rem; color: var(--text-main); font-weight: 700;">
+                  🎯 課前期待 vs. 課後能力與信心提升 (Radar Chart)
+                </h3>
+                <span class="badge badge-primary">前後動態對比</span>
+              </div>
+              <div class="chart-container chart-container-lg">
+                <canvas id="radarChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- 行政痛點與熱門收穫主題 -->
+          <div class="col-12">
+            <div class="glass-card">
+              <h3 style="font-size: 1.1rem; color: var(--text-main); font-weight: 700; margin-bottom: 1rem;">
+                🔥 行政耗時痛點 vs. 最感興趣之 AI 解決方案
+              </h3>
+              <div class="chart-container">
+                <canvas id="topicsChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右欄: 滿意度 Gauge & 即時填寫動態流 -->
+      <div class="col-5">
+        <div class="dashboard-grid">
+          <!-- 滿意度 Gauge -->
+          <div class="col-12">
+            <div class="glass-card">
+              <h3 style="font-size: 1.1rem; color: var(--text-main); font-weight: 700; margin-bottom: 0.75rem;">
+                🌟 演講整體滿意度分佈
+              </h3>
+              <div class="chart-container" style="height: 200px;">
+                <canvas id="satisfactionChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- 即時動態回饋卡片流 -->
+          <div class="col-12">
+            <div class="glass-card">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+                <h3 style="font-size: 1.1rem; color: var(--text-main); font-weight: 700;">
+                  💬 同仁即時回饋與心得跑馬燈
+                </h3>
+                <span class="badge badge-pink" style="animation: pulse-glow 1.5s infinite;">即時同步中</span>
+              </div>
+              <div id="live-feed-list" class="live-feed-container">
+                <!-- 動態生成的卡片內容 -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 動態熱門關鍵字 -->
+          <div class="col-12">
+            <div class="glass-card" style="padding: 1rem 1.25rem;">
+              <h4 style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+                🏷️ 全場關心亮點標籤雲
+              </h4>
+              <div id="word-cloud-tags" class="tag-container">
+                <!-- 標籤雲內容 -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 最新提交動態 Toast 提示視窗 -->
+  <div id="new-submission-toast" class="toast-notification">
+    <div style="font-size: 2rem;">🎉</div>
+    <div id="toast-message">
+      <strong>收到新填寫回饋！</strong>
+    </div>
+  </div>
+
+  <!-- QR Code 彈出 Modal -->
+  <div id="qr-modal" class="modal-backdrop">
+    <div class="modal-content" style="max-width: 520px;">
+      <h2 style="font-size: 1.5rem; color: #fff; margin-bottom: 0.35rem;">📱 請掃描 QR Code 填寫問卷</h2>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
+        請同仁拿起手機開啟相機或 LINE 掃描，即時參與課前期待與課後滿意度調查！
+      </p>
+
+      <!-- QR Code 顯示區域 -->
+      <div style="background: #ffffff; padding: 1.25rem; border-radius: 16px; display: inline-block; margin-bottom: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+        <div id="qrcode-container" style="display: flex; justify-content: center; align-items: center; min-width: 200px; min-height: 200px;"></div>
+      </div>
+
+      <!-- 網址顯示與自訂局域網 IP / 部署網址 -->
+      <div style="margin-bottom: 1.25rem; text-align: left; background: rgba(15, 23, 42, 0.6); padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid var(--border-glass);">
+        <label style="display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+          🌐 當前 QR Code 指向網址 (同仁手機掃描目標)：
+        </label>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <input type="text" id="qr-target-url-input" class="form-control" style="font-size: 0.85rem; padding: 0.4rem 0.75rem;" placeholder="http://192.168.X.X:8080/participant.html" />
+          <button class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem; white-space: nowrap;" onclick="updateQRTargetUrl()">
+            更新 QR Code
+          </button>
+        </div>
+        <div style="font-size: 0.75rem; color: #fbbf24; margin-top: 0.4rem;">
+          💡 提示：若使用電腦局域網展示，請輸入本機 Wi-Fi IP (例如 `http://192.168.1.100:8080/participant.html`)，手機即可順利連線！
+        </div>
+      </div>
+
+      <button class="btn btn-secondary btn-block" onclick="closeQRModal()">關閉視窗</button>
+    </div>
+  </div>
+
+  <!-- 引入應用程式腳本 -->
+  <script src="js/app.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>
+    // 全螢幕切換
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => alert(err.message));
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Modal 與 QR Code 生成控制
+    function openQRModal() {
+      const modal = document.getElementById('qr-modal');
+      if (modal) modal.classList.add('show');
+      
+      const config = window.SurveyEngine.getConfig();
+      const urlInput = document.getElementById('qr-target-url-input');
+
+      // 優先採用手動設定網址，否則自動判斷
+      let targetUrl = config.customSurveyUrl;
+      if (!targetUrl) {
+        if (window.location.protocol === 'file:') {
+          targetUrl = 'http://192.168.1.100:8080/participant.html';
+        } else {
+          // 若是 localhost，提醒可換成真實 IP
+          targetUrl = window.location.origin + window.location.pathname.replace('dashboard.html', 'participant.html');
+        }
+      }
+
+      if (urlInput) urlInput.value = targetUrl;
+      renderQRCode(targetUrl);
+    }
+
+    function updateQRTargetUrl() {
+      const urlInput = document.getElementById('qr-target-url-input');
+      if (!urlInput) return;
+      let newUrl = urlInput.value.trim();
+      if (!newUrl) return;
+
+      window.SurveyEngine.updateConfig({ customSurveyUrl: newUrl });
+      renderQRCode(newUrl);
+      alert('已更新 QR Code！手機掃描將連線至：\n' + newUrl);
+    }
+
+    function renderQRCode(targetUrl) {
+      const container = document.getElementById('qrcode-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      try {
+        if (typeof QRCode === 'function') {
+          new QRCode(container, {
+            text: targetUrl,
+            width: 200,
+            height: 200,
+            colorDark : "#0f172a",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+          });
+        } else {
+          throw new Error('QRCode JS library not found');
+        }
+      } catch (err) {
+        // 高可用 API 雙重 Fallback
+        const img = document.createElement('img');
+        img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(targetUrl);
+        img.alt = 'QR Code';
+        img.style.width = '200px';
+        img.style.height = '200px';
+        container.appendChild(img);
+      }
+    }
+
+    function closeQRModal() {
+      const modal = document.getElementById('qr-modal');
+      if (modal) modal.classList.remove('show');
+    }
+  </script>
+</body>
+</html>
