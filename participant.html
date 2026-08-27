@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="css/style.css">
   <!-- canvas-confetti CDN -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- QRCode.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body style="padding-bottom: 2rem;">
 
@@ -23,6 +25,11 @@
       <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem;">
         輔英科技大學 AI 行政效能提升演講
       </p>
+      <div style="margin-top: 0.6rem;">
+        <button type="button" class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.85rem;" onclick="openQRModal()">
+          📱 顯示 QR Code 讓身邊同仁掃描
+        </button>
+      </div>
     </div>
 
     <!-- 表單卡片 -->
@@ -207,8 +214,44 @@
     </div>
   </div>
 
+  <!-- QR Code 彈出 Modal -->
+  <div id="qr-modal" class="modal-backdrop">
+    <div class="modal-content" style="max-width: 400px;">
+      <h3 style="font-size: 1.3rem; color: #fff; margin-bottom: 0.5rem;">📱 本問卷 QR Code</h3>
+      <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">
+        請同仁拿起手機開啟相機或 LINE 掃描填寫：
+      </p>
+      <div style="background: #ffffff; padding: 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1rem;">
+        <div id="qrcode-container" style="display: flex; justify-content: center; align-items: center; min-width: 180px; min-height: 180px;"></div>
+      </div>
+      <button class="btn btn-secondary btn-block" onclick="closeQRModal()">關閉視窗</button>
+    </div>
+  </div>
+
   <!-- 引入腳本 -->
   <script src="js/app.js"></script>
   <script src="js/participant.js"></script>
+  <script>
+    function openQRModal() {
+      const modal = document.getElementById('qr-modal');
+      const container = document.getElementById('qrcode-container');
+      if (modal) modal.classList.add('show');
+      if (container) {
+        container.innerHTML = '';
+        const targetUrl = window.location.href;
+        try {
+          new QRCode(container, { text: targetUrl, width: 180, height: 180, colorDark: "#0f172a", colorLight: "#ffffff" });
+        } catch (e) {
+          const img = document.createElement('img');
+          img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(targetUrl);
+          container.appendChild(img);
+        }
+      }
+    }
+    function closeQRModal() {
+      const modal = document.getElementById('qr-modal');
+      if (modal) modal.classList.remove('show');
+    }
+  </script>
 </body>
 </html>
