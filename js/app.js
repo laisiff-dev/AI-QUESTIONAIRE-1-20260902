@@ -15,7 +15,8 @@
     surveyOpen: true,
     title: 'AI 行政效能提升實務演講',
     speaker: 'AI 行政效能講師',
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    customSurveyUrl: 'https://laisiff-dev.github.io/AI-QUESTIONAIRE-1-20260902/participant.html'
   };
 
   class SurveyAppEngine {

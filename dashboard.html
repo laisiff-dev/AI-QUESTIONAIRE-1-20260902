@@ -224,15 +224,10 @@
       const config = window.SurveyEngine.getConfig();
       const urlInput = document.getElementById('qr-target-url-input');
 
-      // 優先採用手動設定網址，否則自動判斷
-      let targetUrl = config.customSurveyUrl;
-      if (!targetUrl) {
-        if (window.location.protocol === 'file:') {
-          targetUrl = 'http://192.168.1.100:8080/participant.html';
-        } else {
-          // 若是 localhost，提醒可換成真實 IP
-          targetUrl = window.location.origin + window.location.pathname.replace('dashboard.html', 'participant.html');
-        }
+      // 優先採用設定網址，否則自動判斷
+      let targetUrl = config.customSurveyUrl || 'https://laisiff-dev.github.io/AI-QUESTIONAIRE-1-20260902/participant.html';
+      if (!config.customSurveyUrl && window.location.protocol !== 'file:' && !window.location.hostname.includes('localhost')) {
+        targetUrl = window.location.origin + window.location.pathname.replace('dashboard.html', 'participant.html');
       }
 
       if (urlInput) urlInput.value = targetUrl;
