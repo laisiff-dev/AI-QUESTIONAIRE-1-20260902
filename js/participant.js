@@ -13,19 +13,27 @@
   function initParticipantForm() {
     console.log('Initializing Participant Form...');
 
-    // 訂閱設定變更 (講師切換階段時，手機頁面同步切換模式)
-    window.SurveyEngine.subscribe((event) => {
-      if (event.type === 'CONFIG_UPDATED' || event.type === 'DATA_UPDATED') {
-        const config = window.SurveyEngine.getConfig();
-        if (config.mode !== currentStage) {
-          currentStage = config.mode;
-          renderFormStage(currentStage);
-        }
-      }
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const forcedStage = urlParams.get('stage');
 
-    const initialConfig = window.SurveyEngine.getConfig();
-    currentStage = initialConfig.mode;
+    if (forcedStage === 'pre' || forcedStage === 'post') {
+      currentStage = forcedStage;
+    } else {
+      // 訂閱設定變更 (講師動態切換階段時，手機頁面同步切換模式)
+      window.SurveyEngine.subscribe((event) => {
+        if (event.type === 'CONFIG_UPDATED' || event.type === 'DATA_UPDATED') {
+          const config = window.SurveyEngine.getConfig();
+          if (config.mode !== currentStage) {
+            currentStage = config.mode;
+            renderFormStage(currentStage);
+          }
+        }
+      });
+
+      const initialConfig = window.SurveyEngine.getConfig();
+      currentStage = initialConfig.mode;
+    }
+
     renderFormStage(currentStage);
 
     setupStarRatings();

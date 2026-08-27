@@ -41,16 +41,27 @@
           
           <div style="margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid var(--border-glass);">
             <label style="display: block; font-size: 0.85rem; color: #fff; margin-bottom: 0.35rem;">
-              📱 QR Code 手機掃描目標網址設定 (局域網 IP / 部署網址)
+              📱 QR Code 手機掃描目標基礎網址設定 (局域網 IP 或 雲端網址)
             </label>
             <div style="display: flex; gap: 0.5rem;">
-              <input type="text" id="admin-custom-url-input" class="form-control" placeholder="http://192.168.X.X:8080/participant.html" style="font-size: 0.85rem;" />
+              <input type="text" id="admin-custom-url-input" class="form-control" placeholder="https://laisiff-dev.github.io/AI-QUESTIONAIRE-1-20260902/participant.html" style="font-size: 0.85rem;" />
               <button id="btn-save-url" class="btn btn-secondary" style="white-space: nowrap;">
                 儲存網址
               </button>
             </div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;">
-              演講現場若電腦連線 Wi-Fi，請輸入本機 IP（例：`http://192.168.1.100:8080/participant.html`），大螢幕 QR Code 即自動同步！
+            
+            <!-- 兩種 QR Code 模式說明 -->
+            <div style="margin-top: 1rem; background: rgba(15, 23, 42, 0.6); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border-glass); font-size: 0.8rem;">
+              <div style="font-weight: bold; color: #38bdf8; margin-bottom: 0.35rem;">💡 課前與課後問卷之 2 種區分與掃描模式：</div>
+              <div style="margin-bottom: 0.4rem; color: #e2e8f0;">
+                <strong>【模式 A：同一個 QR Code 動態切換】(最方便推薦)</strong><br>
+                同仁只需掃描同一個 QR Code。講師在上方按「開放課前」時，全場手機自動變為課前問卷；按「開放課後」時，全場手機<strong>無須重新掃描，自動切換為課後問卷</strong>！
+              </div>
+              <div style="color: #e2e8f0;">
+                <strong>【模式 B：課前與課後獨立 QR Code】(分別列印/展示)</strong><br>
+                • ⚡ 課前問卷專用連結：<a href="participant.html?stage=pre" target="_blank" style="color: #fbbf24; text-decoration: underline;">participant.html?stage=pre</a><br>
+                • 🎉 課後問卷專用連結：<a href="participant.html?stage=post" target="_blank" style="color: #34d399; text-decoration: underline;">participant.html?stage=post</a>
+              </div>
             </div>
           </div>
         </div>

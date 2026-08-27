@@ -176,6 +176,19 @@
         請同仁拿起手機開啟相機或 LINE 掃描，即時參與課前期待與課後滿意度調查！
       </p>
 
+      <!-- QR Code 類型切換按鈕 -->
+      <div style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
+        <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.65rem;" onclick="setQRStage('pre')">
+          ⚡ 課前問卷 QR Code
+        </button>
+        <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 0.35rem 0.65rem;" onclick="setQRStage('post')">
+          🎉 課後問卷 QR Code
+        </button>
+        <button class="btn btn-primary" style="font-size: 0.8rem; padding: 0.35rem 0.65rem;" onclick="setQRStage('auto')">
+          🔄 自動同步 QR Code
+        </button>
+      </div>
+
       <!-- QR Code 顯示區域 -->
       <div style="background: #ffffff; padding: 1.25rem; border-radius: 16px; display: inline-block; margin-bottom: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
         <div id="qrcode-container" style="display: flex; justify-content: center; align-items: center; min-width: 200px; min-height: 200px;"></div>
@@ -187,13 +200,13 @@
           🌐 當前 QR Code 指向網址 (同仁手機掃描目標)：
         </label>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
-          <input type="text" id="qr-target-url-input" class="form-control" style="font-size: 0.85rem; padding: 0.4rem 0.75rem;" placeholder="http://192.168.X.X:8080/participant.html" />
+          <input type="text" id="qr-target-url-input" class="form-control" style="font-size: 0.85rem; padding: 0.4rem 0.75rem;" placeholder="https://laisiff-dev.github.io/AI-QUESTIONAIRE-1-20260902/participant.html" />
           <button class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.85rem; white-space: nowrap;" onclick="updateQRTargetUrl()">
             更新 QR Code
           </button>
         </div>
         <div style="font-size: 0.75rem; color: #fbbf24; margin-top: 0.4rem;">
-          💡 提示：若使用電腦局域網展示，請輸入本機 Wi-Fi IP (例如 `http://192.168.1.100:8080/participant.html`)，手機即可順利連線！
+          💡 提示：點擊上方按鈕可隨時切換產出【課前專用】或【課後專用】之 QR Code！
         </div>
       </div>
 
@@ -232,6 +245,18 @@
 
       if (urlInput) urlInput.value = targetUrl;
       renderQRCode(targetUrl);
+    function setQRStage(type) {
+      const urlInput = document.getElementById('qr-target-url-input');
+      let baseUrl = 'https://laisiff-dev.github.io/AI-QUESTIONAIRE-1-20260902/participant.html';
+      if (urlInput && urlInput.value) {
+        baseUrl = urlInput.value.split('?')[0];
+      }
+      let finalUrl = baseUrl;
+      if (type === 'pre') finalUrl += '?stage=pre';
+      else if (type === 'post') finalUrl += '?stage=post';
+      
+      if (urlInput) urlInput.value = finalUrl;
+      renderQRCode(finalUrl);
     }
 
     function updateQRTargetUrl() {
