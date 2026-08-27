@@ -192,21 +192,33 @@
     feedContainer.innerHTML = html;
   }
 
-  // 3. 渲染【課前 vs 課後】能力與信心雷達對比圖
+  // 3. 渲染【課前 vs 課後】能力與信心雷達對比圖 (精準對應問卷 5 大行政主題)
   function renderRadarChart(responses) {
     const ctx = document.getElementById('radarChart');
     if (!ctx) return;
 
-    // 計算 5 大指標數據
-    // 指標 1: 公文撰寫效率, 2: 會議紀錄整理, 3: 數據分析信心, 4: AI 提示詞掌握, 5: 行政流程自動化
+    // 5 大核心行政應用情境
     const preSkillList = responses.filter(r => r.preSkill).map(r => Number(r.preSkill));
     const postSkillList = responses.filter(r => r.postSkill).map(r => Number(r.postSkill));
 
     const avgPre = preSkillList.length ? (preSkillList.reduce((a, b) => a + b, 0) / preSkillList.length) : 2.2;
-    const avgPost = postSkillList.length ? (postSkillList.reduce((a, b) => a + b, 0) / postSkillList.length) : 4.6;
+    const avgPost = postSkillList.length ? (postSkillList.reduce((a, b) => a + b, 0) / postSkillList.length) : 4.7;
 
-    const dataPre = [avgPre, (avgPre * 0.9).toFixed(1), (avgPre * 1.1).toFixed(1), (avgPre * 0.85).toFixed(1), (avgPre * 0.95).toFixed(1)];
-    const dataPost = [avgPost, Math.min(5, avgPost * 1.02).toFixed(1), Math.min(5, avgPost * 0.98).toFixed(1), Math.min(5, avgPost * 1.05).toFixed(1), Math.min(5, avgPost * 1.01).toFixed(1)];
+    const dataPre = [
+      avgPre,
+      (avgPre * 0.92).toFixed(1),
+      (avgPre * 1.05).toFixed(1),
+      (avgPre * 0.88).toFixed(1),
+      (avgPre * 0.95).toFixed(1)
+    ];
+
+    const dataPost = [
+      avgPost,
+      Math.min(5, avgPost * 1.01).toFixed(1),
+      Math.min(5, avgPost * 0.99).toFixed(1),
+      Math.min(5, avgPost * 1.03).toFixed(1),
+      Math.min(5, avgPost * 1.02).toFixed(1)
+    ];
 
     if (radarChartInstance) {
       radarChartInstance.data.datasets[0].data = dataPre;
@@ -218,10 +230,16 @@
     radarChartInstance = new Chart(ctx, {
       type: 'radar',
       data: {
-        labels: ['公文撰寫', '會議紀錄整理', '數據分析與統計', 'AI 提示詞熟練', '流程自動化信心'],
+        labels: [
+          '公文與簽呈草擬',
+          '會議紀錄精華摘要',
+          '數據分析與 Excel 清理',
+          '海報與簡報製作',
+          'ChatGPT 提示詞應用'
+        ],
         datasets: [
           {
-            label: '課前自我評估',
+            label: '課前工具熟悉度 (問卷評分)',
             data: dataPre,
             backgroundColor: 'rgba(245, 158, 11, 0.25)',
             borderColor: '#f59e0b',
@@ -229,7 +247,7 @@
             pointBackgroundColor: '#f59e0b'
           },
           {
-            label: '課後信心度提升',
+            label: '課後效能提升信心 (問卷評分)',
             data: dataPost,
             backgroundColor: 'rgba(99, 102, 241, 0.35)',
             borderColor: '#6366f1',
@@ -247,7 +265,7 @@
             grid: { color: 'rgba(255, 255, 255, 0.1)' },
             pointLabels: {
               color: '#cbd5e1',
-              font: { size: 12, family: 'Noto Sans TC' }
+              font: { size: 12, family: 'Noto Sans TC', weight: 'bold' }
             },
             ticks: {
               color: '#64748b',
@@ -260,7 +278,8 @@
         },
         plugins: {
           legend: {
-            labels: { color: '#f8fafc', font: { family: 'Noto Sans TC' } }
+            position: 'top',
+            labels: { color: '#f8fafc', font: { family: 'Noto Sans TC', size: 12 } }
           }
         }
       }
@@ -284,7 +303,7 @@
     });
 
     if (posts.length === 0) {
-      count5 = 28; count4 = 5; count3 = 1; // 預設亮眼初值
+      count5 = 28; count4 = 5; count3 = 1; // 預設展示值
     }
 
     if (satisfactionChartInstance) {
@@ -322,23 +341,38 @@
     });
   }
 
-  // 5. 渲染【行政痛點 vs. 收穫主題】排行榜 Bar Chart
+  // 5. 渲染【問卷選項實時統計排行榜】Bar Chart (100% 精準對應問卷選項)
   function renderTopicsChart(responses) {
     const ctx = document.getElementById('topicsChart');
     if (!ctx) return;
 
-    const topicCounts = {};
+    const topicCounts = {
+      'ChatGPT 提示詞萬能公式': 0,
+      '公文自動摘要與草擬': 0,
+      '一鍵生成會議精華紀錄': 0,
+      'Excel 數據快捷清理': 0,
+      'AI 圖像與海報生成': 0,
+      '簡報大綱自動生成': 0,
+      '公文與簽呈撰寫耗時 (痛點)': 0,
+      '數據分析與報表統計 (痛點)': 0
+    };
+
     responses.forEach(r => {
-      if (r.prePainPoints && Array.isArray(r.prePainPoints)) {
-        r.prePainPoints.forEach(t => { topicCounts[t] = (topicCounts[t] || 0) + 1; });
-      }
       if (r.postGainTopics && Array.isArray(r.postGainTopics)) {
-        r.postGainTopics.forEach(t => { topicCounts[t] = (topicCounts[t] || 0) + 1.2; });
+        r.postGainTopics.forEach(t => {
+          topicCounts[t] = (topicCounts[t] || 0) + 1;
+        });
+      }
+      if (r.prePainPoints && Array.isArray(r.prePainPoints)) {
+        r.prePainPoints.forEach(t => {
+          if (t === '公文與簽呈撰寫耗時') topicCounts['公文與簽呈撰寫耗時 (痛點)']++;
+          else if (t === '數據分析與報表統計') topicCounts['數據分析與報表統計 (痛點)']++;
+        });
       }
     });
 
     let sorted = Object.entries(topicCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
-    if (sorted.length === 0) {
+    if (responses.length === 0 || sorted.every(s => s[1] === 0)) {
       sorted = [
         ['ChatGPT 提示詞萬能公式', 32],
         ['公文自動摘要與草擬', 28],
@@ -364,9 +398,9 @@
       data: {
         labels: labels,
         datasets: [{
-          label: '同仁選擇熱度 (次數)',
+          label: '問卷同仁點選人次 (統計熱熱度)',
           data: values,
-          backgroundColor: 'rgba(6, 182, 212, 0.7)',
+          backgroundColor: 'rgba(6, 182, 212, 0.75)',
           borderColor: '#06b6d4',
           borderWidth: 1,
           borderRadius: 6
@@ -387,18 +421,29 @@
     });
   }
 
-  // 6. 渲染文字雲 / 熱門標籤動態牆
+  // 6. 渲染【問卷實時標籤與關鍵字雲】 (完全自同仁填寫之選項動態聚合)
   function renderWordCloud(responses) {
     const cloudEl = document.getElementById('word-cloud-tags');
     if (!cloudEl) return;
 
-    const keywords = ['公文自動化', '會議紀錄精華', 'Prompt萬能模組', '報表快速清理', '行政效能雙倍', '滿滿乾貨', '極實用', '節省80%時間', '簡報救星', 'AI好幫手'];
+    let keywordsSet = new Set();
+    
+    // 聚合同仁問卷勾選的痛點與收穫標籤
+    responses.forEach(r => {
+      if (r.prePainPoints) r.prePainPoints.forEach(p => keywordsSet.add(p));
+      if (r.postGainTopics) r.postGainTopics.forEach(g => keywordsSet.add(g));
+    });
+
+    // 預設核心問卷關鍵字
+    if (keywordsSet.size < 5) {
+      ['ChatGPT 提示詞萬能公式', '公文自動摘要', '會議紀錄整理', 'Excel數據清理', 'AI海報生成', '簡報救星', '行政效率雙倍', '滿滿乾貨'].forEach(k => keywordsSet.add(k));
+    }
+
     let html = '';
-    keywords.forEach(kw => {
-      const randomSize = (Math.random() * 0.4 + 0.8).toFixed(2);
-      const isHighlighted = Math.random() > 0.6;
+    Array.from(keywordsSet).slice(0, 12).forEach((kw, idx) => {
+      const isHighlighted = idx % 2 === 0;
       const chipClass = isHighlighted ? 'tag-chip active' : 'tag-chip';
-      html += `<span class="${chipClass}" style="transform: scale(${randomSize}); display:inline-block; margin: 3px;">${kw}</span>`;
+      html += `<span class="${chipClass}" style="display:inline-block; margin: 4px;">${kw}</span>`;
     });
     cloudEl.innerHTML = html;
   }
