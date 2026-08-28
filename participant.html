@@ -35,6 +35,16 @@
       </div>
     </div>
 
+    <!-- 前後測階段即時切換頁籤條 (Pre/Post Stage Switcher) -->
+    <div class="stage-switcher-container">
+      <button type="button" id="tab-stage-pre" class="stage-tab-btn" onclick="switchFormStage('pre')">
+        ⚡ 課前問卷 (期待與痛點)
+      </button>
+      <button type="button" id="tab-stage-post" class="stage-tab-btn active-post" onclick="switchFormStage('post')">
+        🎉 課後問卷 (滿意度與收穫)
+      </button>
+    </div>
+
     <!-- 表單卡片 -->
     <form id="survey-form" class="glass-card">
       
@@ -46,53 +56,53 @@
         <select id="field-department" class="form-select">
           <option value="" disabled>-- 請選擇所屬單位 / 學院科系 --</option>
           
-          <optgroup label="🏛️ 一級行政單位">
-            <option value="校長室 / 祕書室">校長室 / 祕書室</option>
+          <optgroup label="🏛️ 行政單位">
+            <option value="董事會">董事會</option>
+            <option value="校長室">校長室</option>
+            <option value="副校長室">副校長室</option>
+            <option value="秘書處">秘書處</option>
             <option value="教務處">教務處</option>
-            <option value="學生事務處 (學務處)">學生事務處 (學務處)</option>
+            <option value="學生事務處">學生事務處 (學務處)</option>
             <option value="總務處">總務處</option>
-            <option value="研究發展處 (研發處)">研究發展處 (研發處)</option>
-            <option value="國際暨兩岸交流處">國際暨兩岸交流處</option>
+            <option value="研發與永續發展處">研發與永續發展處</option>
+            <option value="圖書暨資訊處">圖書暨資訊處</option>
+            <option value="國際暨兩岸事務處">國際暨兩岸事務處</option>
             <option value="人事室">人事室</option>
-            <option value="主計室 / 會計室">主計室 / 會計室</option>
-            <option value="資訊中心">資訊中心</option>
-            <option value="圖書館">圖書館</option>
-            <option value="環境安全衛生中心">環境安全衛生中心 (環安中心)</option>
-            <option value="產學合作暨職涯發展中心">產學合作暨職涯發展中心</option>
-            <option value="體育室">體育室</option>
-            <option value="附設機構 / 附設醫院">附設機構 / 附設醫院</option>
+            <option value="會計室">會計室</option>
+            <option value="稽核室">稽核室</option>
+            <option value="健康與體育發展處">健康與體育發展處</option>
+            <option value="推廣教育中心">推廣教育中心</option>
+            <option value="老化及疾病預防研究中心">老化及疾病預防研究中心</option>
+            <option value="輔英附設醫院">輔英附設醫院</option>
           </optgroup>
 
           <optgroup label="🩺 護理學院">
-            <option value="護理學院 (院辦)">護理學院 (院辦)</option>
-            <option value="護理系 (含碩博班)">護理系 (含碩博班)</option>
-            <option value="助產與婦潔保健系">助產與婦潔保健系</option>
-            <option value="高齡長期照護事業系">高齡長期照護事業系</option>
+            <option value="護理系">護理系</option>
+            <option value="學士後護理">學士後護理</option>
+            <option value="健康事業管理系">健康事業管理系</option>
+            <option value="高齡及長期照護事業系">高齡及長期照護事業系</option>
+            <option value="高齡全程照顧人才培育中心">高齡全程照顧人才培育中心</option>
           </optgroup>
 
           <optgroup label="🧪 醫學與健康學院">
-            <option value="醫學與健康學院 (院辦)">醫學與健康學院 (院辦)</option>
             <option value="醫學檢驗生物技術系">醫學檢驗生物技術系</option>
             <option value="物理治療系">物理治療系</option>
-            <option value="香妝與保健造型學系">香妝與保健造型學系</option>
-            <option value="職業安全衛生系">職業安全衛生系</option>
+            <option value="保健營養系">保健營養系</option>
+            <option value="健康美容系">健康美容系</option>
           </optgroup>
 
-          <optgroup label="🌱 環境與生命科學學院">
-            <option value="環境與生命科學學院 (院辦)">環境與生命科學學院 (院辦)</option>
+          <optgroup label="🌱 環境與生命學院">
             <option value="環境工程與科學系">環境工程與科學系</option>
-            <option value="保健營養系">保健營養系</option>
-            <option value="生物科技系">生物科技系</option>
+            <option value="職業安全衛生系">職業安全衛生系</option>
+            <option value="應用化學及材料科學系">應用化學及材料科學系</option>
+            <option value="生物科技與綠色產業系">生物科技與綠色產業系</option>
           </optgroup>
 
           <optgroup label="💼 人文與管理學院">
-            <option value="人文與管理學院 (院辦)">人文與管理學院 (院辦)</option>
-            <option value="幼兒保育系">幼兒保育系</option>
-            <option value="健康美容學系">健康美容學系</option>
+            <option value="資訊科技與管理系">資訊科技與管理系</option>
             <option value="休閒與遊憩事業管理系">休閒與遊憩事業管理系</option>
-            <option value="資訊管理系">資訊管理系</option>
+            <option value="幼兒保育暨產業系">幼兒保育暨產業系</option>
             <option value="應用外語系">應用外語系</option>
-            <option value="通識教育中心">通識教育中心</option>
           </optgroup>
 
           <optgroup label="其他">

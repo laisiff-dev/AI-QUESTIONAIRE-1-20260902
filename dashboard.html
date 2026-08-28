@@ -141,6 +141,12 @@
                 </h3>
                 <span class="badge badge-pink" style="animation: pulse-glow 1.5s infinite;">即時同步中</span>
               </div>
+              <!-- 前後測即時動態卡片切換篩選 -->
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 0.85rem; flex-wrap: wrap;">
+                <span class="filter-pill active" onclick="setDashboardFeedFilter('all', this)">📊 全部問卷</span>
+                <span class="filter-pill" onclick="setDashboardFeedFilter('pre', this)">⚡ 課前期待</span>
+                <span class="filter-pill" onclick="setDashboardFeedFilter('post', this)">🎉 課後滿意度</span>
+              </div>
               <div id="live-feed-list" class="live-feed-container">
                 <!-- 動態生成的卡片內容 -->
               </div>

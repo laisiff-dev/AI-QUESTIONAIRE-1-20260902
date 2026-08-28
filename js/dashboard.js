@@ -9,6 +9,18 @@
   let satisfactionChartInstance = null;
   let topicsChartInstance = null;
   let audioContext = null;
+  let currentFeedFilter = 'all'; // 'all', 'pre', 'post'
+
+  // 看板即時動態卡片篩選切換
+  window.setDashboardFeedFilter = function (filter, pillEl) {
+    currentFeedFilter = filter;
+    if (pillEl && pillEl.parentElement) {
+      pillEl.parentElement.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      pillEl.classList.add('active');
+    }
+    const responses = window.SurveyEngine.getResponses();
+    renderLiveFeed(responses);
+  };
 
   // 初始化音效 (可選觸發填寫音效)
   function playChimeSound() {
@@ -157,13 +169,20 @@
     const feedContainer = document.getElementById('live-feed-list');
     if (!feedContainer) return;
 
-    if (!responses.length) {
-      feedContainer.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted);">靜候同仁填寫中... 大螢幕將即時呈現！</div>`;
+    let filteredResponses = responses;
+    if (currentFeedFilter === 'pre') {
+      filteredResponses = responses.filter(r => r.stage === 'pre');
+    } else if (currentFeedFilter === 'post') {
+      filteredResponses = responses.filter(r => r.stage === 'post');
+    }
+
+    if (!filteredResponses.length) {
+      feedContainer.innerHTML = `<div style="text-align:center; padding:2rem; color:var(--text-muted);">無對應分類之問卷資料</div>`;
       return;
     }
 
     // 取前 15 筆顯示
-    const displayItems = responses.slice(0, 15);
+    const displayItems = filteredResponses.slice(0, 15);
     let html = '';
 
     displayItems.forEach((item, idx) => {

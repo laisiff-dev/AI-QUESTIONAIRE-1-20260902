@@ -41,12 +41,22 @@
     setupFormSubmit();
   }
 
-  // 根據 currentStage (pre / post) 渲染對應問卷內容
+  // 手動或動態切換問卷階段 (pre / post)
+  window.switchFormStage = function (stage) {
+    if (stage !== 'pre' && stage !== 'post') return;
+    currentStage = stage;
+    renderFormStage(currentStage);
+  };
+
+  // 根據 currentStage (pre / post) 渲染對應問卷內容與頁籤樣式
   function renderFormStage(stage) {
     const stagePreEl = document.getElementById('stage-pre-fields');
     const stagePostEl = document.getElementById('stage-post-fields');
     const stageTitleBadge = document.getElementById('form-stage-badge');
     const formTitle = document.getElementById('form-main-title');
+    const tabPreBtn = document.getElementById('tab-stage-pre');
+    const tabPostBtn = document.getElementById('tab-stage-post');
+    const submitBtn = document.querySelector('#survey-form button[type="submit"]');
 
     if (stage === 'pre') {
       if (stagePreEl) stagePreEl.style.display = 'block';
@@ -56,6 +66,15 @@
         stageTitleBadge.textContent = '⚡ 課前問卷：期待與痛點調查';
       }
       if (formTitle) formTitle.textContent = '課前學習期待調查';
+      if (tabPreBtn) {
+        tabPreBtn.className = 'stage-tab-btn active-pre';
+      }
+      if (tabPostBtn) {
+        tabPostBtn.className = 'stage-tab-btn';
+      }
+      if (submitBtn) {
+        submitBtn.innerHTML = '🚀 送出【課前期待】問卷 (即時登上大螢幕看板)';
+      }
     } else {
       if (stagePreEl) stagePreEl.style.display = 'none';
       if (stagePostEl) stagePostEl.style.display = 'block';
@@ -64,6 +83,15 @@
         stageTitleBadge.textContent = '🎉 課後問卷：滿意度與學習收穫';
       }
       if (formTitle) formTitle.textContent = '課後滿意度與回饋問卷';
+      if (tabPreBtn) {
+        tabPreBtn.className = 'stage-tab-btn';
+      }
+      if (tabPostBtn) {
+        tabPostBtn.className = 'stage-tab-btn active-post';
+      }
+      if (submitBtn) {
+        submitBtn.innerHTML = '🚀 送出【課後滿意度】問卷 (即時登上大螢幕看板)';
+      }
     }
   }
 
